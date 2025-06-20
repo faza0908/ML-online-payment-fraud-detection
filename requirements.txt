@@ -1,0 +1,7 @@
+%%writefile requirements.txt
+streamlit
+joblib
+pandas
+scikit-learn
+lightgbm
+imbalanced-learn
