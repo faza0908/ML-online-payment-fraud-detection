@@ -4,4 +4,4 @@ pandas
 scikit-learn
 lightgbm
 imbalanced-learn
-kagglehub
+gdown
