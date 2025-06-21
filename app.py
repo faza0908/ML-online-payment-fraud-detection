@@ -2,6 +2,8 @@ import streamlit as st
 import joblib
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+import kagglehub
+import os
 
 # Load the saved LightGBM model
 try:
@@ -9,6 +11,41 @@ try:
 except FileNotFoundError:
     st.error("Model file not found. Please make sure 'best_lgbm_model.pkl' is in the same directory.")
     st.stop()
+
+# Define the dataset URL (This is no longer used since we are downloading via KaggleHub)
+# dataset_url = "YOUR_DATASET_URL" # Replace with the actual URL of your dataset
+
+
+# Load the dataset from the downloaded path
+@st.cache_data # Cache the data to avoid reloading on every interaction
+def load_data(path):
+    try:
+        df = pd.read_csv(path)
+        return df
+    except Exception as e:
+        st.error(f"Error loading dataset from path: {e}")
+        st.stop()
+
+# Download latest version of the dataset using kagglehub and load it
+try:
+    path = kagglehub.dataset_download("jainilcoder/online-payment-fraud-detection")
+    print("Path to dataset files:", path)
+    # Define the path to the CSV file within the downloaded dataset
+    # You might need to adjust this path based on the dataset structure
+    dataset_path = os.path.join(path, "online-payment-fraud-detection", "kaggle_data.csv") # **UPDATE THIS PATH**
+
+    data = load_data(dataset_path)
+
+except Exception as e:
+    st.error(f"Error downloading dataset from KaggleHub or loading data: {e}")
+    st.stop()
+
+
+# You can now use the 'data' DataFrame in your Streamlit app
+# For example, you might want to display some information about the data
+# st.write("Dataset loaded successfully. First 5 rows:")
+# st.write(data.head())
+
 
 # Create a Streamlit application title
 st.title("Online Payment Fraud Detection")
@@ -40,10 +77,10 @@ if st.button("Predict"):
         'newbalanceOrig': [newbalanceOrig],
         'oldbalanceDest': [oldbalanceDest],
         'newbalanceDest': [newbalanceDest],
-        'type_CASH_OUT': [type_CASH_OUT],
-        'type_DEBIT': [type_DEBIT],
-        'type_PAYMENT': [type_PAYMENT],
-        'type_TRANSFER': [type_TRANSFER],
+        'type_CASH_OUT': [int(type_CASH_OUT)], # Convert boolean to int
+        'type_DEBIT': [int(type_DEBIT)], # Convert boolean to int
+        'type_PAYMENT': [int(type_PAYMENT)], # Convert boolean to int
+        'type_TRANSFER': [int(type_TRANSFER)], # Convert boolean to int
         'transaction_change': [transaction_change]
     })
 
