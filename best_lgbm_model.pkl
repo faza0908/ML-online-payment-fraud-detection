@@ -1,6 +1,0 @@
-import joblib
-
-# Save the best_lgbm_model to a file
-joblib.dump(best_lgbm_model, 'best_lgbm_model.pkl')
-
-print("Best LightGBM model saved to best_lgbm_model.pkl")
